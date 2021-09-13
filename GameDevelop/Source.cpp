@@ -396,8 +396,8 @@ int main() {
 
 	SetConsoleSize(800, 700);
 	hideCursor(0);
-	menu();
-	/*setup();
+	//menu();
+	setup();
 	while (true) {
 		display();
 		input();
@@ -409,7 +409,7 @@ int main() {
 			_getch();
 			Time = 10 * 19;
 		}*/
-		//}
+	}
 		//cout << char(13);
 
 	return 0;
