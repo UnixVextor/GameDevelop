@@ -1,7 +1,0 @@
-thebest 990
-twen 220
-bgun 220
-Giant 190
-Tj 120
-bb 60
-order 30
