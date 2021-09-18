@@ -398,7 +398,7 @@ void win() {
 	gotoxy(14, 11); cout << "*                                         *";
 	gotoxy(14, 12); cout << "*                                         *";
 	gotoxy(14, 13); cout << "*******************************************";
-	gotoxy(14, 10); cout << "*  Enter your name : "; getline(cin,NameWin); 
+	gotoxy(14, 10); cout << "*  Enter your name : "; cin >> NameWin; 
 	hideCursor(0);
 	vector<pair<int, string>> userScore;
 	fstream file("score.txt", ios::in);
