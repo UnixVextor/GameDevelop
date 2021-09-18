@@ -67,10 +67,10 @@ void hideCursor(int visible) {
 }
 
 
-int life = 4;
+int life = 2;
 int score = 0;
-int Time = 20;
-int SetTime = 20;
+int Time = 200;
+int SetTime = 200;
 unsigned pastTime = 0;
 unsigned pastTimeItem = 0;
 int item_time = 0;
