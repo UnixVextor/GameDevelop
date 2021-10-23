@@ -8,6 +8,7 @@
 #include<algorithm>
 #include<string>
 #include<fstream>
+#include<cmath>
 
 #define BLACK 0
 #define BLUE  1
@@ -199,6 +200,7 @@ public:
 		countDelay++;
 	}
 
+
 	bool collision(int fx, int fy) {
 		if (map[fy][fx] == 9) return true;
 		return false;
@@ -218,24 +220,24 @@ void setup() {
 
 	enemy[0].x = 9;
 	enemy[0].y = 9;
-	enemy[0].delay = 5;
+	enemy[0].delay = 3;
 
 	enemy[1].x = 10;
 	enemy[1].y = 11;
-	enemy[1].delay = 5;
+	enemy[1].delay = 3;
 
 
 	enemy[2].x = 11;
 	enemy[2].y = 19;
-	enemy[2].delay = 5;
+	enemy[2].delay = 3;
 
 	enemy[3].x = 2;
 	enemy[3].y = 1;
-	enemy[3].delay = 5;
+	enemy[3].delay = 3;
 
 	enemy[4].x = 18;
 	enemy[4].y = 1;
-	enemy[4].delay = 5;
+	enemy[4].delay = 3;
 
 	int x = rand() % 20;
 	int y = rand() % 20;
@@ -268,6 +270,7 @@ void display() {
 	gotoxy(56, 6); cout << "Life: " << life;
 	setcolor(WHITE, BLACK);
 	gotoxy(40, 6); cout << "Score: " << score;
+	//gotoxy(40, 7); cout << pacman.x << "  " << pacman.y;
 	if (clock() - pastTime >= 1000) {
 		gotoxy(47, 4); cout << "           ";
 		setcolor(GREEN,BLACK);
@@ -275,6 +278,7 @@ void display() {
 		
 		pastTime = clock();
 	}
+
 	setcolor(AQUA,BLACK);
 	gotoxy(39, 9); cout << "-------------------------";
 	setcolor(WHITE, BLACK);
@@ -310,7 +314,7 @@ void display() {
 			gotoxy(j + 15, i + 4);
 			if (map[i][j] == 9) {
 				setcolor(GREEN, BLACK);
-				cout << char(178);  //collision
+				cout << char(178);  //wall
 			}
 			if (map[i][j] == 8) cout << ' '; // dot
 			if (map[i][j] == 1) cout << char(86);
@@ -378,6 +382,29 @@ void Catch(int y, int x) {
 	}
 }
 
+void change_number(int x, int y) {
+
+}
+
+void ghostmove() {
+	int position_condition[25][2] = {
+		{15,20},{15,80},{15,12},{5,205},{5,835},{5,125},
+		{7,805},{9,605},{11,65},{13,85},{7,121},{13,12},
+		{15,40},{15,10},{15,14},{13,16},{13,10},{10,10},
+		{7,101},{5,141},{5,101},{5,105},{5,405},{7,405},{13,45}};
+	int enemy_close_player = 0;
+	for (int x = 0; x < 5; x++) {
+		enemy_close_player = ((pacman.y - enemy[x].y) < 0) ? -enemy_close_player : enemy_close_player;
+		if (enemy_close_player == 1) {
+			for (int i = 0; i < 25; i++) {
+				if (enemy[x].x == position_condition[i][0] && enemy[x].y == position_condition[i][1]) {
+					gotoxy(40, 7); cout << "bb";
+				}
+			}
+		}
+	}
+}
+
 void movement() {
 	for (int i = 0; i < 5; i++) {
 		enemy[i].move();
@@ -429,7 +456,7 @@ void win() {
 	score = 0;
 	gotoxy(14, 17); cout << "       PRESS ANY KEY TO GO BACK MENU       ";
 	_getch();
-	menu(); 
+	menu();
 }
 
 
@@ -452,6 +479,7 @@ void lose() {
 	else {
 		lose();
 	}
+	
 }
 
 void Score() {
@@ -486,7 +514,8 @@ void Score() {
 
 void playGame() {
 	setup();
-	while (true) {
+	int state = 1;
+	while (state) {
 		display();
 		input();
 		movement();
@@ -511,10 +540,11 @@ void playGame() {
 			}
 			system("CLS");
 			win();
+			state = 0;
 		}
 
 		if (life == 0) {
-			life = 4;
+			life = 2;
 			Time = SetTime;
 			for (int i = 0; i < ScreenHeight; i++) {
 				for (int j = 0; j < ScreenWidth; j++) {
@@ -523,6 +553,7 @@ void playGame() {
 			}
 			system("CLS");
 			lose();
+			state = 0;
 		}
 	}
 }
@@ -581,17 +612,16 @@ void menu() {
 			exit = true; // exit
 		}
 		if (scroll == 2) {
-			system("CLS");
 			exit = true;
+			system("CLS");
 			Score();// score
 		}
 		if (scroll == 0) {
-			system("CLS");
 			exit = true;
+			system("CLS");
 			playGame();
 			//paly game
 		}
-		cout << scroll;
 		scroll = 2;
 		c = ' ';
 		system("CLS");

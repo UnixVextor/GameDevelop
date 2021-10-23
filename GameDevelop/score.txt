@@ -5,3 +5,9 @@ Giant 190
 Tj 120
 bb 60
 order 30
+game 30
+sfdsfds 0
+jfdjkd\ 0
+game 0
+fdfd 0
+dfdssdfd 0
