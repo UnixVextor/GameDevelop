@@ -67,16 +67,18 @@ void hideCursor(int visible) {
 	SetConsoleCursorInfo(console, &cursor);
 }
 
-
 int life = 2;
 int score = 0;
 int Time = 200;
 int SetTime = 200;
+int delayEnemy = 400;
+unsigned long pastTimeEnemy = 0;
 unsigned pastTime = 0;
 unsigned pastTimeItem = 0;
 int item_time = 0;
 int const ScreenHeight = 22;
 int const ScreenWidth = 22;
+COORD dir;
 string NameWin;
 bool is_exit = false;
 int map[ScreenHeight][ScreenWidth];
@@ -181,6 +183,7 @@ public:
 	int ch;
 	int delay;
 	int countDelay;
+	int count = 0;
 
 	void draw() {
 		if (item_time > 0) map[y][x] = 10;
@@ -208,7 +211,7 @@ public:
 };
 
 player pacman;
-Enemy enemy[5];
+Enemy enemy[6];
 
 void setup() {
 	srand(time(NULL));
@@ -218,27 +221,30 @@ void setup() {
 	pacman.delay = 5;
 
 
-	enemy[0].x = 9;
-	enemy[0].y = 9;
-	enemy[0].delay = 3;
+	enemy[0].x = 3;
+	enemy[0].y = 1;
+	enemy[0].delay = 4;
+	enemy[0].countDelay = 0;
 
-	enemy[1].x = 10;
-	enemy[1].y = 11;
-	enemy[1].delay = 3;
+	enemy[1].x = 15;
+	enemy[1].y = 1;
+	
 
 
-	enemy[2].x = 11;
-	enemy[2].y = 19;
-	enemy[2].delay = 3;
+	enemy[2].x = 10;
+	enemy[2].y = 9;
+	
 
-	enemy[3].x = 2;
-	enemy[3].y = 1;
-	enemy[3].delay = 3;
+	enemy[3].x = 5;
+	enemy[3].y = 19;
+	
 
 	enemy[4].x = 18;
-	enemy[4].y = 1;
-	enemy[4].delay = 3;
+	enemy[4].y = 13;
 
+	enemy[5].x = 10;
+	enemy[5].y = 7;
+	
 	int x = rand() % 20;
 	int y = rand() % 20;
 	while (1) {
@@ -270,15 +276,14 @@ void display() {
 	gotoxy(56, 6); cout << "Life: " << life;
 	setcolor(WHITE, BLACK);
 	gotoxy(40, 6); cout << "Score: " << score;
-	//gotoxy(40, 7); cout << pacman.x << "  " << pacman.y;
 	if (clock() - pastTime >= 1000) {
 		gotoxy(47, 4); cout << "           ";
 		setcolor(GREEN,BLACK);
 		gotoxy(47, 4); cout << "Time : " << --Time;
-		
+		if (Time % 50 == 0) delayEnemy -= 100;
 		pastTime = clock();
 	}
-
+	
 	setcolor(AQUA,BLACK);
 	gotoxy(39, 9); cout << "-------------------------";
 	setcolor(WHITE, BLACK);
@@ -341,28 +346,28 @@ void input() {
 		case 's':
 			if (!pacman.collision(pacman.x, pacman.y + 1)) {
 				pacman.ch = 'D';
-				pacman.move(pacman.x, pacman.y++);
+				pacman.move(pacman.x, ++pacman.y);
 			}
 			break;
 		case 'w':
 			if (!pacman.collision(pacman.x, pacman.y - 1)) {
 				pacman.ch = 'U';
-				pacman.move(pacman.x, pacman.y--);
+				pacman.move(pacman.x, --pacman.y);
 			}
 			break;
 		case 'a':
 			if (!pacman.collision(pacman.x - 1, pacman.y)) {
 				pacman.ch = 'L';
-				pacman.move(pacman.x--, pacman.y);
+				pacman.move(--pacman.x, pacman.y);
 			}
 			break;
 		case 'd':
 			if (!pacman.collision(pacman.x + 1, pacman.y)) {
 				pacman.ch = 'R';
-				pacman.move(pacman.x++, pacman.y);
+				pacman.move(++pacman.x, pacman.y);
 			}
 			break;
-			case char(27) :
+		case char(27):
 			is_exit = true;
 			break;
 		}
@@ -382,32 +387,64 @@ void Catch(int y, int x) {
 	}
 }
 
-void change_number(int x, int y) {
-
-}
 
 void ghostmove() {
-	int position_condition[25][2] = {
-		{15,20},{15,80},{15,12},{5,205},{5,835},{5,125},
-		{7,805},{9,605},{11,65},{13,85},{7,121},{13,12},
-		{15,40},{15,10},{15,14},{13,16},{13,10},{10,10},
-		{7,101},{5,141},{5,101},{5,105},{5,405},{7,405},{13,45}};
-	int enemy_close_player = 0;
-	for (int x = 0; x < 5; x++) {
-		enemy_close_player = ((pacman.y - enemy[x].y) < 0) ? -enemy_close_player : enemy_close_player;
-		if (enemy_close_player == 1) {
-			for (int i = 0; i < 25; i++) {
-				if (enemy[x].x == position_condition[i][0] && enemy[x].y == position_condition[i][1]) {
-					gotoxy(40, 7); cout << "bb";
-				}
-			}
-		}
+	int dir_enemy_0[22][2] = { {3,1},{4,1},{5,1},{6,1},{7,1},{8,1},{9,1},{9,2},{9,3},
+							 {8,3},{7,3},{6,3},{5,3},{5,4},{5,5},{4,5},{3,5},{2,5},{2,4},
+							 {2,3},{2,2},{2,1}};
+	int dir_enemy_1[22][2] = { {15,1},{16,1},{17,1},{18,1},{18,2},{18,3},{18,4},{18,5},{17,5},
+							 {16,5},{15,5},{15,4},{15,3},{14,3},{13,3},{12,3},{11,3},{11,2},{11,1},
+							 {12,1},{13,1},{14,1}};
+	int dir_enemy_2[36][2] = { {11,9},{12,9},{13,9},{14,9},{15,9},{16,9},{17,9},{18,9},{19,9},
+							   {18,9},{17,9},{16,9},{15,9},{14,9},{13,9},{12,9},{11,9},{10,9},
+							   {9,9},{8,9},{7,9},{6,9},{5,9},{4,9},{3,9},{2,9},{1,9},{2,9},{3,9},{4,9},{5,9},
+							   {6,9},{7,9},{8,9},{9,9},{10,9} };
+	int dir_enemy_3[33][2] = { {5,19},{4,19},{3,19},{2,19},{2,18},{2,17},{3,17},{3,16},{3,15},{2,15},{2,14},
+							   {2,13},{3,13},{4,13},{5,13},{6,13},{7,13},{8,13},{9,13},{9,14},{9,15},{8,15}, 
+							   {7,15},{7,16},{7,17},{8,17},{9,17},{9,18},{9,19},{8,19},{7,19},{6,19},{5,19}};
+	int dir_enemy_4[33][2] = { {18,13},{17,13},{16,13},{15,13},{14,13},{13,13},{12,13},{11,13},{11,14},{11,15},
+							   {12,15},{13,15},{13,16},{13,17},{12,17},{11,17},{11,18},{11,19},{12,19},{13,19},
+							   {14,19},{15,19},{16,19},{17,19},{18,19},{18,18},{18,17},{17,17},{17,16},{17,15}, 
+							   {18,15},{18,14},{18,13}};
+
+
+	if (clock() - pastTimeEnemy >= delayEnemy) {
+		enemy[0].count++;
+		enemy[1].count++;
+		enemy[2].count++;
+		enemy[3].count++;
+		enemy[4].count++;
+
+		enemy[0].x = dir_enemy_0[enemy[0].count][0];
+		enemy[0].y = dir_enemy_0[enemy[0].count][1];
+		
+		enemy[1].x = dir_enemy_1[enemy[1].count][0];
+		enemy[1].y = dir_enemy_1[enemy[1].count][1];
+
+		enemy[2].x = dir_enemy_2[enemy[2].count][0];
+		enemy[2].y = dir_enemy_2[enemy[2].count][1];
+
+		enemy[3].x = dir_enemy_3[enemy[3].count][0];
+		enemy[3].y = dir_enemy_3[enemy[3].count][1];
+
+		enemy[4].x = dir_enemy_4[enemy[4].count][0];
+		enemy[4].y = dir_enemy_4[enemy[4].count][1];
+
+		pastTimeEnemy = clock();
 	}
+	if (enemy[0].count == 21) enemy[0].count = 0;
+	if (enemy[1].count == 21) enemy[1].count = 0;
+	if (enemy[2].count == 35) enemy[2].count = 0;
+	if (enemy[3].count == 32) enemy[3].count = 0;
+	if (enemy[4].count == 32) enemy[4].count = 0;
+
+	
 }
 
 void movement() {
+	
+	ghostmove();
 	for (int i = 0; i < 5; i++) {
-		enemy[i].move();
 		Catch(enemy[i].y, enemy[i].x);
 	}
 }
@@ -533,6 +570,12 @@ void playGame() {
 		}
 		if (Time == 0) {
 			Time = SetTime;
+			delayEnemy = 400;
+			enemy[0].count = 0;
+			enemy[1].count = 0;
+			enemy[2].count = 0;
+			enemy[3].count = 0;
+			enemy[4].count = 0;
 			for (int i = 0; i < ScreenHeight; i++) {
 				for (int j = 0; j < ScreenWidth; j++) {
 					if (stage[i][j] == '*') stage[i][j] = '.';
@@ -545,7 +588,13 @@ void playGame() {
 
 		if (life == 0) {
 			life = 2;
+			delayEnemy = 400;
 			Time = SetTime;
+			enemy[0].count = 0;
+			enemy[1].count = 0;
+			enemy[2].count = 0;
+			enemy[3].count = 0;
+			enemy[4].count = 0;
 			for (int i = 0; i < ScreenHeight; i++) {
 				for (int j = 0; j < ScreenWidth; j++) {
 					if (stage[i][j] == '*') stage[i][j] = '.';
