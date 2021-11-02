@@ -14,7 +14,7 @@
 		}
 
 
-// 3D direction 
+// 2D direction x and y go on the same time 
 // Pos -> player
 // enemy -> enemy
 
