@@ -234,22 +234,22 @@ void setup() {
 
 	enemy[1].x = 15;
 	enemy[1].y = 1;
-	enemy[1].delayEnemy = 500;
+	enemy[1].delayEnemy = 600;
 	enemy[1].limit = 9;
 
 	enemy[2].x = 10;
 	enemy[2].y = 9;
-	enemy[2].delayEnemy = 500;
+	enemy[2].delayEnemy = 600;
 	enemy[2].limit = 13;
 
 	enemy[3].x = 5;
 	enemy[3].y = 19;
-	enemy[3].delayEnemy = 500;
+	enemy[3].delayEnemy = 600;
 	enemy[3].limit = 13;
 
 	enemy[4].x = 18;
 	enemy[4].y = 13;
-	enemy[4].delayEnemy = 500;
+	enemy[4].delayEnemy = 600;
 	enemy[4].limit = 13;
 
 	int x = rand() % 20;
@@ -404,6 +404,7 @@ void movement() {
 	
 	//ghostmove();
 	for (int i = 0; i < 5; i++) {
+		
 		int difx = abs(pacman.x - enemy[i].x);
 		int dify = abs(pacman.y - enemy[i].y);
 		enemy[i].fx_ = enemy[i].x;
@@ -468,33 +469,14 @@ void movement() {
 							enemy[i].dir = rand() % 2;
 						}
 					}
-					else {
-						enemy[i].move();
-					}
 					
-					if (enemy[0].y > enemy[0].limit) {
-						enemy[0].y = enemy[0].limit;
-
-					}
-					if (enemy[1].y > enemy[1].limit) {
-						enemy[1].y = enemy[1].limit;
-					}
-					if (enemy[2].y > enemy[2].limit) {
-						enemy[2].y = enemy[2].limit;
-					}
-					if (enemy[3].y < enemy[3].limit) {
-						enemy[3].y = enemy[3].limit;
-					}
-					if (enemy[4].y < enemy[4].limit) {
-						enemy[4].y = enemy[4].limit;
-					}
-					if (enemy[2].y < 9) 
-					{
-						enemy[2].y = 9;
-					}
+				}
+				else {
+					enemy[i].move();
 				}
 				Catch(enemy[i].y, enemy[i].x);
 				enemy[i].pastTimeEnemy = clock();
+
 			}
 	}
 }
