@@ -229,27 +229,27 @@ void setup() {
 
 	enemy[0].x = 2;
 	enemy[0].y = 2;
-	enemy[0].delayEnemy = 600;
+	enemy[0].delayEnemy = 700;
 	enemy[0].limit = 9;
 
 	enemy[1].x = 15;
 	enemy[1].y = 1;
-	enemy[1].delayEnemy = 600;
+	enemy[1].delayEnemy = 700;
 	enemy[1].limit = 9;
 
 	enemy[2].x = 10;
 	enemy[2].y = 9;
-	enemy[2].delayEnemy = 600;
+	enemy[2].delayEnemy = 700;
 	enemy[2].limit = 13;
 
 	enemy[3].x = 5;
 	enemy[3].y = 19;
-	enemy[3].delayEnemy = 600;
+	enemy[3].delayEnemy = 700;
 	enemy[3].limit = 13;
 
 	enemy[4].x = 18;
 	enemy[4].y = 13;
-	enemy[4].delayEnemy = 600;
+	enemy[4].delayEnemy = 700;
 	enemy[4].limit = 13;
 
 	int x = rand() % 20;
